@@ -1,17 +1,13 @@
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
+var passwordText = document.querySelector("#password");
 var letterReg = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","v","w","x","y","z"];
 var letterCaps = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z"];
 var numbers = [0,1,2,3,4,5,6,7,8,9];
 var specChars = [" ","!","#","$","%","&","(",")","*","+",",","-",".","/",":",";","<","=",">","?","@","[","]","^","_","`","{","|","}","~"];
+var inclLetters, inclCaps, inclNumbers, inclChars, passLength, passChunk;
 var password = "";
 var divisor = 0;
-var inclLetters;
-var inclCaps;
-var inclNumbers;
-var inclChars;
-var passLength;
-var passChunk;
 var passRemainder = 0;
 
 // Defining a function for setting password length
@@ -88,11 +84,9 @@ function iterateSpecChar() {
 
 // Password Generation Function
 function generatePassword() {
-
   // Calling the password length and character groups functions
   passwordLength();
   charGroups(); 
-
   // Generating a password based on selections made by the user
   // First, adding regular letters, if selected
   if (inclLetters) {
@@ -103,7 +97,6 @@ function generatePassword() {
       console.log(password);
     }
   } 
-  
   // Then adding capital letters, if selected, inserting them at random positions
   if (inclCaps) {
     for (var j = 0; j < passChunk; j++) {
@@ -116,7 +109,6 @@ function generatePassword() {
       console.log(password);
     }
   }  
-  
   // Then adding numbers, if selected, inserted randomly
   if (inclNumbers) {
       for (var k = 0; k < passChunk; k++) {
@@ -129,7 +121,6 @@ function generatePassword() {
         console.log(password);      
       }
   }  
-  
   // Then adding special characters, if selected, inserted randomly.
   // But first checking for the existence of any remainder characters to add. 
   if (inclChars && passRemainder > 0) {
@@ -139,25 +130,21 @@ function generatePassword() {
       iterateSpecChar();
     }
   } else if (inclChars == false && passRemainder > 0) {
-      for (var l = 0; l < passRemainder; l++) {
+      for (var m = 0; m < passRemainder; m++) {
         iterateSpecChar();
       }
   } else if (inclChars && passRemainder == 0) {
-      for (var l = 0; l < passChunk; l++) {
+      for (var n = 0; n < passChunk; n++) {
         iterateSpecChar();
       } 
     } 
-  
   return password;
 }
 
 // Write password to the #password input
 function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.textContent = "Your secure password:" + "\n" + password;
-
+  password = generatePassword();
+  passwordText.textContent = "Your secure password: \r\n" + password;
 }
 
 // Add event listener to generate button
