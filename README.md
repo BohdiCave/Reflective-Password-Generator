@@ -8,3 +8,5 @@ And all the while the user may enjoy viewing a serene lake surface, reflecting a
 
 ![Screenshot of the home page](./Assets/pw-generator.png)
 
+![Screenshot after password generation](./Assets/pw-generator2.png)
+
