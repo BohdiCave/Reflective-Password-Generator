@@ -1,13 +1,15 @@
 // Assignment Code
 var generateBtn = document.querySelector("#generate");
 var passwordText = document.querySelector("#password");
-var letterReg = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","r","s","t","u","v","w","x","y","z"];
-var letterCaps = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z"];
-var numbers = [0,1,2,3,4,5,6,7,8,9];
-var specChars = [" ","!","#","$","%","&","(",")","*","+",",","-",".","/",":",";","<","=",">","?","@","[","]","^","_","`","{","|","}","~"];
-var inclLetters, inclCaps, inclNumbers, inclChars, passLength, passChunk;
+var lower = "abcdefghijklmnopqrstuvwxyz";
+var upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var numbers = "0123456789";
+var specChars = "!#$%&()*+-.,/:;<=>?@[]^_`{|}~ ";
+var inclLower, inclUpper, inclNumbers, inclChars, passLength, passChunk; 
+var newLower, newUpper, newNum, newSpecChar, newChar;
 var password = "";
 var divisor = 0;
+var groups = 0;
 var passRemainder = 0;
 
 // Defining a function for setting password length
@@ -21,32 +23,43 @@ function passwordLength() {
   // Validating the input, change a string into a number
   if (typeof(passLength) == Number && passLength > 8 || passLength < 128) {
     parseInt(passLength);
-    console.log(passLength);
   }
   return passLength; 
 }
 
 // Defining a function that prompts to select various character groups
 function charGroups() {
-  inclLetters = confirm("Do you want to include ordinary letters? abc");
-  if (inclLetters) {
-    divisor++;
-    console.log(divisor);
+  inclLower = confirm("Do you want to include lowercase letters? abc");
+  if (inclLower) {
+    divisor+=1;
+    groups+=1;
+    alert("Lowercase letters will be included. \n" + groups + " character group(s) selected");
+  } else {
+    alert("Lowercase letters will not be included.");
   }
-  inclCaps = confirm("Do you want to include capital letters? ABC");
-  if (inclCaps) {
-    divisor++;
-    console.log(divisor);
+  inclUpper = confirm("Do you want to include uppercase letters? ABC");
+  if (inclUpper) {
+    divisor+=1;
+    groups+=1;
+    alert("Uppercase letters will be included. \n" + groups + " character group(s) selected");
+  } else {
+    alert("Uppercase letters will not be included");
   }
   inclNumbers = confirm("Do you want to include numbers? 123");
   if (inclNumbers) {
-    divisor++;
-    console.log(divisor);
+    divisor+=1;
+    groups+=1;
+    alert("Numbers will be included. \n" + groups + " character group(s) selected");
+  } else {
+    alert("Numbers will not be included.");
   }
   inclChars = confirm("Do you want to include special characters? #$!");
   if (inclChars) {
-    divisor++;
-    console.log(divisor);
+    divisor+=1;
+    groups+=1;
+    alert("Special characters will be included. \n" + groups + " character group(s) selected");
+  } else {
+    alert("Special characters will not be included.");
   }
   // Ensuring that at least one character group is selected
   while (divisor == 0) {
@@ -56,96 +69,106 @@ function charGroups() {
   // Distributing password characters equally among the selected groups
   if (divisor > 0) {
     passChunk = Math.floor(passLength / divisor);
-    console.log("Each group will have", passChunk, "characters.");
+    alert("You selected " + groups + " character groups. \n Each will have a minimum of " + passChunk + " characters.");
    
-    // If the selected password length does not divide evenly among the selected groups, 
-    // defining a variable to hold the value for iterating the larger final chunk of special characters.
-    // This is done in the generatePassword() function below.
+    // If the password length does not divide evenly among the groups, 
+    // defining a variable to hold the remainder, to be used in the generatePassword function.
     if (passChunk * divisor !== passLength) {
       passRemainder = passLength - (passChunk * divisor);
     } else {
       passRemainder = 0;
     }
-    console.log("The remainder is", passRemainder, ".");
   }
   return passRemainder;
 }
 
-// Defining a function internal to a loop for special characters
-function iterateSpecChar() {
-  var newChar = specChars[Math.floor(Math.random() * specChars.length)]; 
-  console.log(newChar);
-  const passArrZ = password.split('');
-  const z = Math.floor(Math.random() * password.length);
-  passArrZ.splice(z,0,newChar);
-  password = passArrZ.join('');
-  console.log(password);
+// Defining a function to insert characters randomly
+function randomInsert() { 
+  var passArr = password.split('');
+  var x = Math.floor(Math.random() * passArr.length);
+  passArr.splice(x,0,newChar);
+  password = passArr.join('');
 }
+
 
 // Password Generation Function
 function generatePassword() {
+  // Clearing the variable from the previous generation
+  password = "";
   // Calling the password length and character groups functions
   passwordLength();
   charGroups(); 
   // Generating a password based on selections made by the user
-  // First, adding regular letters, if selected
-  if (inclLetters) {
-    for (var i = 0; i < passChunk; i++) {
-      var newLetter = letterReg[Math.floor(Math.random() * letterReg.length)];
-      console.log(newLetter);
-      password += newLetter;
-      console.log(password);
+  // First, adding lowercase letters, if selected
+  if (inclLower) {
+    var lowerChunk = passChunk + passRemainder;
+    for (var i = 0; i < lowerChunk; i++) {
+      var newLower = lower[Math.floor(Math.random() * lower.length)];
+      password += newLower;
     }
   } 
   // Then adding capital letters, if selected, inserting them at random positions
-  if (inclCaps) {
-    for (var j = 0; j < passChunk; j++) {
-      var newCap = letterCaps[Math.floor(Math.random() * letterCaps.length)];
-      console.log(newCap);
-      const passArrX = password.split('');
-      const x = Math.floor(Math.random() * password.length);
-      passArrX.splice(x,0,newCap);
-      password = passArrX.join('');
-      console.log(password);
+  if (inclUpper) {
+    if (!inclLower) {
+      var upperChunk = passChunk + passRemainder;
+      for (var h = 0; h < upperChunk; h++) {
+        newUpper = upper[Math.floor(Math.random() * upper.length)];
+        newChar = newUpper;
+        randomInsert();
+      }
+    } else {
+      for (var j = 0; j < passChunk; j++) {
+        newUpper = upper[Math.floor(Math.random() * upper.length)];
+        newChar = newUpper;
+        randomInsert();
+      }
     }
   }  
   // Then adding numbers, if selected, inserted randomly
   if (inclNumbers) {
+    if (!inclLower && !inclUpper) {
+      var numChunk = passChunk + passRemainder;
+      for (var g = 0; g < numChunk; g++) {
+        newNum = numbers[Math.floor(Math.random() * numbers.length)]; 
+        newChar = newNum;
+        randomInsert();
+      }
+    } else {
       for (var k = 0; k < passChunk; k++) {
-        var newNum = numbers[Math.floor(Math.random() * numbers.length)]; 
-        console.log(newNum);
-        const passArrY = password.split(''); 
-        const y = Math.floor(Math.random() * password.length);
-        passArrY.splice(y,0,newNum); 
-        password = passArrY.join('');
-        console.log(password);      
+        newNum = numbers[Math.floor(Math.random() * numbers.length)]; 
+        newChar = newNum;
+        randomInsert();
       }
-  }  
-  // Then adding special characters, if selected, inserted randomly.
-  // But first checking for the existence of any remainder characters to add. 
-  if (inclChars && passRemainder > 0) {
-    passChunk += passRemainder;
-    console.log("This last group will insert", passChunk, "characters.");
-    for (var l = 0; l < passChunk; l++) {
-      iterateSpecChar();
     }
-  } else if (inclChars == false && passRemainder > 0) {
-      for (var m = 0; m < passRemainder; m++) {
-        iterateSpecChar();
+  } 
+  // Then adding special characters, if selected, inserted randomly.
+  if (inclChars) {
+    if (!inclLower && !inclUpper && !inclNumbers) {
+      var charChunk = passChunk + passRemainder;
+      for (var f = 0; f < charChunk; f++) {
+        newSpecChar = specChars[Math.floor(Math.random() * specChars.length)]; 
+        newChar = newSpecChar;
+        randomInsert();
       }
-  } else if (inclChars && passRemainder == 0) {
-      for (var n = 0; n < passChunk; n++) {
-        iterateSpecChar();
-      } 
-    } 
+    } else {
+      for (var l = 0; l < passChunk; l++) {
+        newSpecChar = specChars[Math.floor(Math.random() * specChars.length)]; 
+        newChar = newSpecChar;
+        randomInsert();
+      }
+    }
+  }
+  divisor = 0;      
   return password;
 }
 
 // Write password to the #password input
 function writePassword() {
   password = generatePassword();
-  passwordText.textContent = "Your secure password: \r\n" + password;
+  passwordText.textContent = "\r\n" + password;
 }
 
 // Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
+generateBtn.addEventListener("click", function() {
+  writePassword();
+});

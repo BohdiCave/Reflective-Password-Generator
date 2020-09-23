@@ -4,6 +4,10 @@ A tool to generate a secure password using 4 groups of characters - lowercase, u
  
 And all the while the user may enjoy viewing a serene lake surface, reflecting along with it, contemplating the things in life that truly matter.
 
+## Finished project
+
+[Reflective-Password-Generator project](https://bohdicave.github.io/Reflective-Password-Generator)
+
 ## Screenshots
 
 ![Screenshot of the home page](./Assets/pw-generator.png)
